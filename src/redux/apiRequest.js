@@ -7,6 +7,7 @@ import {
   registerStart,
   registerSuccess,
 } from "./authSlice";
+import { getUserFailed, getUserStart, getUserSuccess } from "./userSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -30,5 +31,17 @@ export const registerUser = async (user, dispatch, navigate) => {
     navigate("/login");
   } catch (error) {
     dispatch(registerFailed());
+  }
+};
+
+export const getAllUser = async (accessToken, dispatch) => {
+  dispatch(getUserStart());
+  try {
+    const response = await axios.get("http://localhost:8000/api/users", {
+      headers: { token: `Bearer ${accessToken}` },
+    });
+    dispatch(getUserSuccess(response.data));
+  } catch (error) {
+    dispatch(getUserFailed());
   }
 };
